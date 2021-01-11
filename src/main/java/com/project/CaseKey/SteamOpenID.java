@@ -15,7 +15,7 @@ import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SteamOpenID implements test, Serializable {
+public class SteamOpenID implements OpenIDAuth, Serializable {
     private static final String STEAM_OPENID = "http://steamcommunity.com/openid";
     private final ConsumerManager manager;
     private final Pattern STEAM_REGEX = Pattern.compile("(\\d+)");
