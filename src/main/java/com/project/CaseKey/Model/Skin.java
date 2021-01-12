@@ -2,11 +2,11 @@ package com.project.CaseKey.Model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Generated;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "skins")
@@ -26,9 +26,20 @@ public class Skin implements Serializable {
     private String iconUrl;
     @Getter @Setter
     private LocalDateTime lastUpdate;
+    @OneToMany(mappedBy="skin")
+    private Set<InventoryItem> userItems;
 
     public Skin() {}
 
+    public Skin(String hashName, String skinName, int quality, String price, String iconUrl, LocalDateTime lastUpdate, Set<InventoryItem> userItems) {
+        this.hashName = hashName;
+        this.skinName = skinName;
+        this.quality = quality;
+        this.price = price;
+        this.iconUrl = iconUrl;
+        this.lastUpdate = lastUpdate;
+        this.userItems = userItems;
+    }
     public Skin(String hashName, String skinName, int quality, String price, String iconUrl, LocalDateTime lastUpdate) {
         this.hashName = hashName;
         this.skinName = skinName;

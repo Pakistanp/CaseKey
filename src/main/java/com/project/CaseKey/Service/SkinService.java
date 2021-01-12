@@ -6,9 +6,7 @@ import com.project.CaseKey.JsonModel.SkinInfo;
 import com.project.CaseKey.JsonReader;
 import com.project.CaseKey.Model.Skin;
 import com.project.CaseKey.Repository.SkinRepository;
-import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +14,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -54,8 +49,9 @@ public class SkinService {
             "(Battle-Scarred)"
         };
 
-    public void getSkinsBySkinName(String skinName) {
-        List<Skin> skin = skinRepository.findSkinBySkinName(skinName);
+    public Skin getSkinByHashName(String skinName) {
+        return skinRepository.findSkinByHashName(skinName);
+        //List<Skin> skins = skinRepository.findSkinBySkinName(skinName);
     }
 
     private void updateAllSkinsWithDelay() {

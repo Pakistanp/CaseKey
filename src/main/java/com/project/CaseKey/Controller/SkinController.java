@@ -18,7 +18,7 @@ public class SkinController {
     @GetMapping(value = "/skin/{skinName}")
     public String skinDetails (HttpServletRequest request, HttpServletResponse response,
                                @PathVariable String skinName) {
-        skinService.getSkinsBySkinName(skinName);
+        skinService.getSkinByHashName(skinName);
         return "";
     }
 }
