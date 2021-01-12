@@ -11,5 +11,6 @@
         <property name="hibernate.hbm2dll.auto">update</property>
 
         <mapping class="com.project.CaseKey.Model.Skin" />
+        <mapping class="com.project.CaseKey.Model.InventoryItem" />
     </session-factory>
 </hibernate-configuration>
