@@ -21,4 +21,10 @@ public class SkinController {
         skinService.getSkinByHashName(skinName);
         return "";
     }
+
+    @GetMapping(value = "/skin/updateAll")
+    public String skinUpdateAll (HttpServletRequest request, HttpServletResponse response) {
+        skinService.updateAllSkinsWithDelay();
+        return "";
+    }
 }

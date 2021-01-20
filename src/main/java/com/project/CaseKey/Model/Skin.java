@@ -26,12 +26,16 @@ public class Skin implements Serializable {
     private String iconUrl;
     @Getter @Setter
     private LocalDateTime lastUpdate;
-    @OneToMany(mappedBy="skin")
+    @OneToMany(mappedBy="inventorySkin")
+    @Getter @Setter
     private Set<InventoryItem> userItems;
+    @OneToMany(mappedBy="skinCase")
+    @Getter @Setter
+    private Set<SkinInCase> skinCases;
 
     public Skin() {}
 
-    public Skin(String hashName, String skinName, int quality, String price, String iconUrl, LocalDateTime lastUpdate, Set<InventoryItem> userItems) {
+    public Skin(String hashName, String skinName, int quality, String price, String iconUrl, LocalDateTime lastUpdate, Set<InventoryItem> userItems, Set<SkinInCase> skinCases) {
         this.hashName = hashName;
         this.skinName = skinName;
         this.quality = quality;
@@ -39,6 +43,7 @@ public class Skin implements Serializable {
         this.iconUrl = iconUrl;
         this.lastUpdate = lastUpdate;
         this.userItems = userItems;
+        this.skinCases = skinCases;
     }
     public Skin(String hashName, String skinName, int quality, String price, String iconUrl, LocalDateTime lastUpdate) {
         this.hashName = hashName;
