@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "inventoryitems")
@@ -15,12 +16,14 @@ public class InventoryItem implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     private int id;
-    @NonNull
+    @ManyToOne
+    @JoinColumn(name="userId")
     @Getter @Setter
-    private String userId;
+    private User user;
     @ManyToOne
     @JoinColumn(name="skinHashName", nullable=false)
-    private Skin skin;
+    @Getter @Setter
+    private Skin inventorySkin;
     @Getter @Setter
     private int count;
     @NonNull
@@ -29,10 +32,26 @@ public class InventoryItem implements Serializable {
 
     public InventoryItem() {}
 
-    public InventoryItem(String userId, Skin skin, int count, String type) {
-        this.userId = userId;
-        this.skin = skin;
+    public InventoryItem(User user, Skin inventorySkin, int count, String type) {
+        this.user = user;
+        this.inventorySkin = inventorySkin;
         this.count = count;
         this.type = type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InventoryItem item = (InventoryItem) o;
+        return count == item.count &&
+                user.equals(item.user) &&
+                inventorySkin.equals(item.inventorySkin) &&
+                type.equals(item.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(user, inventorySkin, count, type);
     }
 }

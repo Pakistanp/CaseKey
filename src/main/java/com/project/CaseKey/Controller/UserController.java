@@ -1,6 +1,7 @@
 package com.project.CaseKey.Controller;
 
 import com.project.CaseKey.JsonModel.UserInfo;
+import com.project.CaseKey.Model.User;
 import com.project.CaseKey.Service.UserService;
 import com.project.CaseKey.TemporaryView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +25,8 @@ public class UserController {
     @GetMapping(value = "/")
     public String home(HttpServletRequest request, HttpServletResponse response) {
         UserInfo userInfo = new UserInfo();
-        Object userSteamId = request.getSession().getAttribute("steamId");
-        if (userSteamId != null) {
-            userInfo = userService.getUserInformationFromApi(userSteamId.toString());
-        }
-        return new TemporaryView().createViewForHomePage(userSteamId, userInfo);
+        User user = (User) request.getSession().getAttribute("user");
+        return new TemporaryView().createViewForHomePage(user);
     }
     @GetMapping(value = "/login")
     public String login(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -38,7 +36,7 @@ public class UserController {
 
     @GetMapping(value = "/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        request.getSession().removeAttribute("steamId");
+        request.getSession().removeAttribute("user");
         response.sendRedirect(WEBSITE_ADDRESS);
         return "";
     }
@@ -50,7 +48,8 @@ public class UserController {
         if (userSteamId == null) {
             response.sendRedirect(WEBSITE_ADDRESS);
         }
-        request.getSession(true).setAttribute("steamId", userSteamId);
+        User user = userService.authenticateUser(userSteamId);
+        request.getSession(true).setAttribute("user", user);
         response.sendRedirect(WEBSITE_ADDRESS);
         return "";
     }
