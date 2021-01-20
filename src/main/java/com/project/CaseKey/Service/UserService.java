@@ -95,8 +95,11 @@ public class UserService {
             userRepository.save(user);
         }
         else {
-            user.setCanOpenCase(canUserOpenCases(userSteamId));
-            userRepository.save(user);
+            boolean canOpenCase = canUserOpenCases(userSteamId);
+            if (user.isCanOpenCase() != canOpenCase) {
+                user.setCanOpenCase(canOpenCase);
+                userRepository.save(user);
+            }
         }
         return user;
     }
