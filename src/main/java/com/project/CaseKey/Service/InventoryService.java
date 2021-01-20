@@ -96,4 +96,15 @@ public class InventoryService {
     public List<InventoryItem> getSteamInventory(User user) {
         return inventoryRepository.findSteamInventoryItemsByUser(user);
     }
+
+    public void giveVirtualSkin(User user, Skin skin) {
+        InventoryItem item = inventoryRepository.findWebsiteInventoryItemByUserSkin(user, skin);
+        if(item != null) {
+            item.setCount(item.getCount() + 1);
+            inventoryRepository.save(item);
+        }
+        else {
+            inventoryRepository.save(new InventoryItem(user, skin, 1, "website"));
+        }
+    }
 }

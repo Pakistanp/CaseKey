@@ -20,4 +20,7 @@ public interface InventoryRepository extends JpaRepository<InventoryItem, Intege
     @Modifying
     @Query(value = "update InventoryItem i set i.count = :#{#inventoryItem.count} where i.user.id = :#{#user.id}")
     void updateInventory(@Param("user") User user, @Param("inventoryItem") InventoryItem inventoryItem);
+
+    @Query(value = "select i from InventoryItem i where i.user.id = :#{#user.id} and i.inventorySkin.hashName = :#{#skin.hashName} and i.type = 'website'")
+    InventoryItem findWebsiteInventoryItemByUserSkin(@Param("user") User user, @Param("skin") Skin skin);
 }

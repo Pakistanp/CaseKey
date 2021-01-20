@@ -65,4 +65,21 @@ public class TemporaryView {
         }
         return bodyString.toString();
     }
+
+    public String createViewForOpenedCase(Case openedCase, User user, Skin wonSkin) {
+        StringBuilder bodyString = new StringBuilder();
+        bodyString.append("You won: " + wonSkin.getHashName() + "<br>");
+        bodyString.append(openedCase.getName());
+        if (user != null) {
+            bodyString.append("<br><a href=\"/case/" + openedCase.getId() + "/open\"><button>Open for " + openedCase.getCost().toString() +  "</button></a>");
+        }
+        else {
+            bodyString.append("<br><a href=\"/login\"><button>Login to open a case</button></a>");
+        }
+        bodyString.append("<hr><br>Skins in case: <br>");
+        for (SkinInCase skinInCase : openedCase.getCaseSkins()) {
+            bodyString.append("<img src=\"" + STEAM_ITEM_IMAGE_URL + skinInCase.getSkinCase().getIconUrl() + "\">");
+        }
+        return bodyString.toString();
+    }
 }

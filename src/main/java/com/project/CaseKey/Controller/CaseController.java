@@ -38,7 +38,7 @@ public class CaseController {
                            @PathVariable int caseId) {
         User user = (User) request.getSession().getAttribute("user");
         Case openedCase = (Case) request.getSession().getAttribute("case");
-        caseService.openCase(openedCase, user);
-        return temporaryView.createViewForCase(openedCase, user);
+        Skin wonSkin = caseService.openCase(openedCase, user);
+        return temporaryView.createViewForOpenedCase(openedCase, user, wonSkin);
     }
 }

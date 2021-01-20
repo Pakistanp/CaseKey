@@ -5,6 +5,7 @@ import com.project.CaseKey.Model.Skin;
 import com.project.CaseKey.Model.SkinInCase;
 import com.project.CaseKey.Model.User;
 import com.project.CaseKey.Repository.CaseRepository;
+import com.project.CaseKey.Repository.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +19,22 @@ public class CaseService {
 
     @Autowired
     CaseRepository caseRepository;
+    @Autowired
+    InventoryService inventoryService;
 
     public Case getCase(int caseId) {
         return caseRepository.findCaseById(caseId);
     }
 
-    public void openCase(Case openCase, User user) {
+    public Skin openCase(Case openCase, User user) {
         HashMap<Skin, int[]> skinWithTickets = prepareTicketsEachSkin(openCase);
-        drawSkin(skinWithTickets);
+        Skin skin = drawSkin(skinWithTickets);
+        giveSkin(user, skin);
+        return skin;
+    }
+
+    private void giveSkin(User user, Skin skin) {
+        inventoryService.giveVirtualSkin(user, skin);
     }
 
     private HashMap<Skin,int[]> prepareTicketsEachSkin(Case openCase) {
