@@ -54,7 +54,7 @@ public class TemporaryView {
         StringBuilder bodyString = new StringBuilder();
         bodyString.append(findedCase.getName());
         if (user != null) {
-            bodyString.append("<br><a href=\"#\"><button>Open for " + findedCase.getCost().toString() +  "</button></a>");
+            bodyString.append("<br><a href=\"/case/" + findedCase.getId() + "/open\"><button>Open for " + findedCase.getCost().toString() +  "</button></a>");
         }
         else {
             bodyString.append("<br><a href=\"/login\"><button>Login to open a case</button></a>");

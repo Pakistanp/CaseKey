@@ -29,6 +29,7 @@ public class CaseController {
                            @PathVariable int caseId) {
         User user = (User) request.getSession().getAttribute("user");
         Case findedCase = caseService.getCase(caseId);
+        request.getSession().setAttribute("case", findedCase);
         return temporaryView.createViewForCase(findedCase, user);
     }
 
@@ -36,8 +37,8 @@ public class CaseController {
     public String opeCase(HttpServletRequest request, HttpServletResponse response,
                            @PathVariable int caseId) {
         User user = (User) request.getSession().getAttribute("user");
-        caseService.openCase(caseId, user);
-        Case findedCase = caseService.getCase(caseId);
-        return temporaryView.createViewForCase(findedCase, user);
+        Case openedCase = (Case) request.getSession().getAttribute("case");
+        caseService.openCase(openedCase, user);
+        return temporaryView.createViewForCase(openedCase, user);
     }
 }
