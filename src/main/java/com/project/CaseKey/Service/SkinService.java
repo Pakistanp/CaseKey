@@ -1,7 +1,6 @@
 package com.project.CaseKey.Service;
 
 import com.google.gson.Gson;
-import com.project.CaseKey.HibernateFactory;
 import com.project.CaseKey.JsonModel.SkinInfo;
 import com.project.CaseKey.JsonReader;
 import com.project.CaseKey.Model.Skin;
@@ -26,8 +25,6 @@ public class SkinService {
     private SkinRepository skinRepository;
 
     private List<Skin> skins = new ArrayList<>();
-
-    private HibernateFactory hibernateFactory = new HibernateFactory();
 
     private final String GET_ALL_SKINS_INFO = "https://steamcommunity.com/market/search/render/?&sort_dir=desc&appid=730&norender=1&count=100&start=%s#p1_name_asc";
     private final int COUNTS_ITEMS_FOR_CSGO = 15199;//15226;
@@ -54,7 +51,7 @@ public class SkinService {
         //List<Skin> skins = skinRepository.findSkinBySkinName(skinName);
     }
 
-    private void updateAllSkinsWithDelay() {
+    public void updateAllSkinsWithDelay() {
         for (int start = 0; start < COUNTS_ITEMS_FOR_CSGO; start += COUNT_ONE_UPDATE_ITEMS) {
             getAllSkinsInfoFromApi(start, start + COUNT_ONE_UPDATE_ITEMS);
             try {
@@ -94,14 +91,8 @@ public class SkinService {
     }
 
     private void updateSkinsToDatabase(List<Skin> skins) {
-        Session session = hibernateFactory.getSessionFactory().openSession();
         List<Skin> skinsWithoutDuplicates = removeDuplicateSkins(skins);
-        session.beginTransaction();
-        for (Skin skin : skinsWithoutDuplicates) {
-            session.saveOrUpdate(skin);
-        }
-        session.getTransaction().commit();
-        session.close();
+        skinRepository.saveAll(skinsWithoutDuplicates);
     }
 
     private List<Skin> removeDuplicateSkins(List<Skin> skins) {
