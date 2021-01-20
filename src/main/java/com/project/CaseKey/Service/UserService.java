@@ -56,16 +56,30 @@ public class UserService {
         return userInfo;
     }
 
-    private boolean hasCsGoGameAndEnougthTimePlayed(String userSteamId) {
-        String urlToApi = String.format(GET_PLAYER_OWNED_GAMES, WEB_API, userSteamId);
-        getUserGamesFromJson(urlToApi);
-        return true;
+    private JSONObject getCsGoGameJson(JSONArray games) {
+        for (Object game : games) {
+            if (Integer.parseInt(((JSONObject)game).get("appid").toString()) == CSGO_GAME_CODE) {
+                return (JSONObject)game;
+            }
+        }
+        return null;
     }
 
-    private void getUserGamesFromJson(String urlToApi) {
+    private boolean hasEnoughTimePlayed(JSONObject game) {
+        return Integer.parseInt(game.get("playtime_forever").toString()) / 60 >= CSGO_PLAYED_TIME;
+    }
+
+    private boolean canUserOpenCases(String userSteamId) {
+        String urlToApi = String.format(GET_PLAYER_OWNED_GAMES, WEB_API, userSteamId);
+        JSONArray JSONgames = getUserGamesFromJson(urlToApi);
+        JSONObject game = getCsGoGameJson(JSONgames);
+        return game != null && hasEnoughTimePlayed(game);
+    }
+
+    private JSONArray getUserGamesFromJson(String urlToApi) {
         JsonReader reader = new JsonReader();
         JSONObject gamesInfoAsJson = reader.readJsonFromUrl(urlToApi);
-        JSONArray gamesInfosAsJson = gamesInfoAsJson.getJSONObject("response").getJSONArray("games");
+        return gamesInfoAsJson.getJSONObject("response").getJSONArray("games");
     }
 
     public User authenticateUser(String userSteamId) {
@@ -77,13 +91,14 @@ public class UserService {
             user.setBalance(0.0);
             user.setName(userInfo.getPersonaName());
             user.setAvatarUrl(userInfo.getAvatarFull());
-            user.setCanOpenCase(hasCsGoGameAndEnougthTimePlayed(userSteamId));
+            user.setCanOpenCase(canUserOpenCases(userSteamId));
             userRepository.save(user);
         }
         else {
-            user.setCanOpenCase(hasCsGoGameAndEnougthTimePlayed(userSteamId));
+            user.setCanOpenCase(canUserOpenCases(userSteamId));
             userRepository.save(user);
         }
         return user;
     }
+
 }
