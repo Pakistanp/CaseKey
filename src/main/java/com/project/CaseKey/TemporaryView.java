@@ -68,7 +68,12 @@ public class TemporaryView {
 
     public String createViewForOpenedCase(Case openedCase, User user, Skin wonSkin) {
         StringBuilder bodyString = new StringBuilder();
-        bodyString.append("You won: " + wonSkin.getHashName() + "<br>");
+        if (wonSkin.getHashName() == null) {
+            bodyString.append("You don't have enough dup to open this case.<br>Deposit more dup.");
+        }
+        else {
+            bodyString.append("You won: " + wonSkin.getHashName() + "<br>");
+        }
         bodyString.append(openedCase.getName());
         if (user != null) {
             bodyString.append("<br><a href=\"/case/" + openedCase.getId() + "/open\"><button>Open for " + openedCase.getCost().toString() +  "</button></a>");

@@ -21,16 +21,28 @@ public class CaseService {
     CaseRepository caseRepository;
     @Autowired
     InventoryService inventoryService;
+    @Autowired
+    UserService userService;
 
     public Case getCase(int caseId) {
         return caseRepository.findCaseById(caseId);
     }
 
     public Skin openCase(Case openCase, User user) {
-        HashMap<Skin, int[]> skinWithTickets = prepareTicketsEachSkin(openCase);
-        Skin skin = drawSkin(skinWithTickets);
-        giveSkin(user, skin);
-        return skin;
+        if (checkUserBalance(openCase, user)) {
+            userService.updateUserBalance(user, user.getBalance() - openCase.getCost());
+            HashMap<Skin, int[]> skinWithTickets = prepareTicketsEachSkin(openCase);
+            Skin skin = drawSkin(skinWithTickets);
+            giveSkin(user, skin);
+            return skin;
+        }
+        else {
+            return new Skin();
+        }
+    }
+
+    private boolean checkUserBalance(Case openCase, User user) {
+        return openCase.getCost() <= user.getBalance();
     }
 
     private void giveSkin(User user, Skin skin) {

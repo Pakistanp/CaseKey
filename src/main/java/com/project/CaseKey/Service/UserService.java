@@ -104,4 +104,9 @@ public class UserService {
         return user;
     }
 
+    public void updateUserBalance(User user, Double balance) {
+        user.setBalance(balance);
+        userRepository.save(user);
+    }
+
 }
