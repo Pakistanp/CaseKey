@@ -34,7 +34,7 @@ public class CaseController {
     }
 
     @GetMapping(value = "/case/{caseId}/open")
-    public String opeCase(HttpServletRequest request, HttpServletResponse response,
+    public String openCase(HttpServletRequest request, HttpServletResponse response,
                            @PathVariable int caseId) {
         User user = (User) request.getSession().getAttribute("user");
         Case openedCase = (Case) request.getSession().getAttribute("case");

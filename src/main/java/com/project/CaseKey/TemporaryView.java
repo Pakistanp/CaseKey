@@ -1,10 +1,9 @@
 package com.project.CaseKey;
 
 import com.project.CaseKey.JsonModel.UserInfo;
-import com.project.CaseKey.Model.Case;
-import com.project.CaseKey.Model.Skin;
-import com.project.CaseKey.Model.SkinInCase;
-import com.project.CaseKey.Model.User;
+import com.project.CaseKey.Model.*;
+
+import java.util.List;
 
 public class TemporaryView {
 
@@ -23,12 +22,20 @@ public class TemporaryView {
         }
         return bodyString.toString();
     }
-    public String createViewForInventory(User user) {
+    public String createViewForInventory(User user, List<InventoryItem> inventoryItems) {
         StringBuilder bodyString = new StringBuilder();
         if( user != null ) {
             bodyString.append("Inventory " + user.getName());
-            bodyString.append("<a href=\"logout\">Logout</a>");
+            bodyString.append(" Balance: " + String.format("%,.2f", user.getBalance()));
+            bodyString.append("<br><a href=\"logout\">Logout</a>");
             bodyString.append("<a href=\"/inventory/steam\">Steam Inventory</a>");
+            bodyString.append("<br><hr><br><br>");
+            for (InventoryItem item : inventoryItems) {
+                bodyString.append("<div style=\"width: 154px; height: 115px; background-image: url('" + STEAM_ITEM_IMAGE_URL + item.getInventorySkin().getIconUrl() + "'); background-size: 154px 115px; display:inline-block; position: relative\" />");
+                bodyString.append("<a href=\"/inventory/" + item.getId() + "\"><button>Sell for " + item.getInventorySkin().getPrice() + "</button></a>");
+                bodyString.append("<a href=\"/upgrade/" + item.getId() + "\"><button>Upgrade</button></a>");
+                bodyString.append("<div style=\"position: absolute; top: 4px; right: 4px;\">x" + item.getCount() + "</div></div>");
+            }
         }
         else {
             bodyString.append("<a href=\"login\">Login</a>");

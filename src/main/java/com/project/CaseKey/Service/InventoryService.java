@@ -10,10 +10,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class InventoryService {
@@ -22,6 +19,8 @@ public class InventoryService {
 
     @Autowired
     private SkinService skinService;
+    @Autowired
+    private UserService userService;
     @Autowired
     private InventoryRepository inventoryRepository;
 
@@ -97,6 +96,10 @@ public class InventoryService {
         return inventoryRepository.findSteamInventoryItemsByUser(user);
     }
 
+    public List<InventoryItem> getDropInventory(User user) {
+        return inventoryRepository.findDropInventoryItemsByUser(user);
+    }
+
     public void giveVirtualSkin(User user, Skin skin) {
         InventoryItem item = inventoryRepository.findWebsiteInventoryItemByUserSkin(user, skin);
         if(item != null) {
@@ -106,5 +109,22 @@ public class InventoryService {
         else {
             inventoryRepository.save(new InventoryItem(user, skin, 1, "website"));
         }
+    }
+
+    public void sellItem(User user, int itemId) {
+        InventoryItem item = inventoryRepository.findById(itemId);
+        if (item != null) {
+            userService.updateUserBalance(user, user.getBalance() + priceToDouble(item.getInventorySkin().getPrice()));
+            if (item.getCount() == 1) {
+                inventoryRepository.delete(item);
+            }
+            else {
+                item.setCount(item.getCount() - 1);
+                inventoryRepository.save(item);
+            }
+        }
+    }
+    private Double priceToDouble(String price) {
+        return Double.parseDouble(price.replace("$",""));
     }
 }

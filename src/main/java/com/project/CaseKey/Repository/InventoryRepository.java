@@ -16,6 +16,9 @@ import java.util.List;
 public interface InventoryRepository extends JpaRepository<InventoryItem, Integer> {
     @Query(value = "select i from InventoryItem i where i.user.id = :#{#user.id} and i.type = 'steam'")
     List<InventoryItem> findSteamInventoryItemsByUser(@Param("user") User user);
+    @Query(value = "select i from InventoryItem i where i.user.id = :#{#user.id} and i.type = 'website'")
+    List<InventoryItem> findDropInventoryItemsByUser(@Param("user") User user);
+    InventoryItem findById(int id);
     @Transactional
     @Modifying
     @Query(value = "update InventoryItem i set i.count = :#{#inventoryItem.count} where i.user.id = :#{#user.id}")
