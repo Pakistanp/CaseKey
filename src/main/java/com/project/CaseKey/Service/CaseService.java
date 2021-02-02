@@ -84,4 +84,8 @@ public class CaseService {
         }
         return winningSkin;
     }
+
+    public void createCase(Case newCase) {
+        caseRepository.save(newCase);
+    }
 }

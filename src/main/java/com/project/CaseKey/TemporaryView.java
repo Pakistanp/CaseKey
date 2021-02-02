@@ -94,4 +94,25 @@ public class TemporaryView {
         }
         return bodyString.toString();
     }
+
+    public String createViewForUpgradeItem(User user, InventoryItem item, List<Skin> skins, double chance) {
+        StringBuilder bodyString = new StringBuilder();
+        if( user != null ) {
+            bodyString.append("<h3>Upgrader</h3><br><hr><br>");
+            bodyString.append("<div style=\"width: 154px; height: 115px; background-image: url('" + STEAM_ITEM_IMAGE_URL + item.getInventorySkin().getIconUrl() + "'); background-size: 154px 115px; display:inline-block; position: relative\" /></div>");
+            bodyString.append("Chance: ");
+            if (chance > 0.0) {
+                bodyString.append(String.format("%,.2f", chance));
+            }
+
+        }
+        return bodyString.toString();
+    }
+
+    public String createViewForCaseCreator() {
+        StringBuilder bodyString = new StringBuilder();
+        bodyString.append("<form action=\"/createCase\" method=\"post\">");
+        bodyString.append("<input type=\"range\" min=\"1\" max=\"100\" value=\"1\" oninput=\"this.nextElementSibling.value = this.value\"><output></output>%</form>");
+        return bodyString.toString();
+    }
 }

@@ -82,10 +82,12 @@ public class SkinService {
         LocalDateTime lastUpdate = LocalDateTime.now();
         for (Object skinInfoJ: skinInfosAsJson) {
             SkinInfo skinInfo = new Gson().fromJson(skinInfoJ.toString(), SkinInfo.class);
-            String skinName = getSkinNameFromHashName(skinInfo.getHashName());
-            int quality = getSkinQualityFromHashName(skinInfo.getHashName());
-            skins.add(new Skin(skinInfo.getHashName(), skinName, quality, skinInfo.getSalePriceText(),
-                    skinInfo.getAssetDescription().getIconUrl(), lastUpdate));
+            if (skinInfo.getAssetDescription().getTradable().equals("1")) {
+                String skinName = getSkinNameFromHashName(skinInfo.getHashName());
+                int quality = getSkinQualityFromHashName(skinInfo.getHashName());
+                skins.add(new Skin(skinInfo.getHashName(), skinName, quality, skinInfo.getSalePriceText(),
+                        skinInfo.getAssetDescription().getIconUrl(), lastUpdate));
+            }
         }
         return skins;
     }
@@ -113,5 +115,20 @@ public class SkinService {
                 return quality;
         }
         return 0;
+    }
+
+    public List<Skin> getAllSkins() {
+        return skinRepository.findAll();
+    }
+
+    public Skin getSkinByHashNameFromList(List<Skin> allSkins, String skinHashName) {
+        Skin skin = new Skin();
+        for (Skin searchSkin : allSkins) {
+            if(searchSkin.getHashName().equals(skinHashName)) {
+                skin = searchSkin;
+                break;
+            }
+        }
+        return skin;
     }
 }

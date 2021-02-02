@@ -115,16 +115,24 @@ public class InventoryService {
         InventoryItem item = inventoryRepository.findById(itemId);
         if (item != null) {
             userService.updateUserBalance(user, user.getBalance() + priceToDouble(item.getInventorySkin().getPrice()));
-            if (item.getCount() == 1) {
-                inventoryRepository.delete(item);
-            }
-            else {
-                item.setCount(item.getCount() - 1);
-                inventoryRepository.save(item);
-            }
+            removeItem(item);
         }
     }
-    private Double priceToDouble(String price) {
+    public Double priceToDouble(String price) {
         return Double.parseDouble(price.replace("$",""));
+    }
+
+    public InventoryItem getItemById(int inventoryItemId) {
+        return inventoryRepository.findById(inventoryItemId);
+    }
+
+    public void removeItem(InventoryItem item) {
+        if (item.getCount() == 1) {
+            inventoryRepository.delete(item);
+        }
+        else {
+            item.setCount(item.getCount() - 1);
+            inventoryRepository.save(item);
+        }
     }
 }
