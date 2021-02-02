@@ -7,15 +7,13 @@ import com.project.CaseKey.Model.User;
 import com.project.CaseKey.Service.CaseService;
 import com.project.CaseKey.TemporaryView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
+@RequestMapping("/case")
 public class CaseController {
 
     @Autowired
@@ -24,7 +22,7 @@ public class CaseController {
 
     TemporaryView temporaryView = new TemporaryView();
 
-    @GetMapping(value = "/case/{caseId}")
+    @GetMapping(value = "/{caseId}")
     public String showCase(HttpServletRequest request, HttpServletResponse response,
                            @PathVariable int caseId) {
         User user = (User) request.getSession().getAttribute("user");
@@ -33,12 +31,23 @@ public class CaseController {
         return temporaryView.createViewForCase(findedCase, user);
     }
 
-    @GetMapping(value = "/case/{caseId}/open")
+    @GetMapping(value = "/{caseId}/open")
     public String openCase(HttpServletRequest request, HttpServletResponse response,
                            @PathVariable int caseId) {
         User user = (User) request.getSession().getAttribute("user");
         Case openedCase = (Case) request.getSession().getAttribute("case");
         Skin wonSkin = caseService.openCase(openedCase, user);
         return temporaryView.createViewForOpenedCase(openedCase, user, wonSkin);
+    }
+
+    @GetMapping(value = "/creator")
+    public String creator(HttpServletRequest request, HttpServletResponse response) {
+        return temporaryView.createViewForCaseCreator();
+    }
+
+    @PostMapping(value = "/create")
+    public String createCase(HttpServletRequest request, HttpServletResponse response, Case newCase) {
+        caseService.createCase(newCase);
+        return temporaryView.createViewForCaseCreator();
     }
 }
