@@ -9,6 +9,11 @@ public class TemporaryView {
 
     private final String STEAM_ITEM_IMAGE_URL = "https://steamcommunity-a.akamaihd.net/economy/image/";
 
+    private Double priceToDouble(String price) {
+        String noDolarSign = price.replace("$","");
+        return Double.parseDouble(noDolarSign.replace(",",""));
+    }
+
     public String createViewForHomePage(User user) {
         StringBuilder bodyString = new StringBuilder();
         if( user != null ) {
@@ -95,16 +100,24 @@ public class TemporaryView {
         return bodyString.toString();
     }
 
-    public String createViewForUpgradeItem(User user, InventoryItem item, List<Skin> skins, double chance) {
+    public String createViewForUpgradeItem(User user, InventoryItem item, List<Skin> skins) {
         StringBuilder bodyString = new StringBuilder();
         if( user != null ) {
-            bodyString.append("<h3>Upgrader</h3><br><hr><br>");
-            bodyString.append("<div style=\"width: 154px; height: 115px; background-image: url('" + STEAM_ITEM_IMAGE_URL + item.getInventorySkin().getIconUrl() + "'); background-size: 154px 115px; display:inline-block; position: relative\" /></div>");
-            bodyString.append("Chance: ");
-            if (chance > 0.0) {
-                bodyString.append(String.format("%,.2f", chance));
-            }
+            bodyString.append("<h3>Upgrader</h3><br>");
+            bodyString.append("<div style=\"width: 154px; height: 115px; background-image: url('" + STEAM_ITEM_IMAGE_URL + item.getInventorySkin().getIconUrl() + "'); background-size: 154px 115px; display:inline-block; position: relative\" /></div><hr><br>");
 
+            for (int i = 0; i < 300; i++) {
+                double chance = priceToDouble(item.getInventorySkin().getPrice()) * 100.00 / priceToDouble(skins.get(i).getPrice());
+                if (chance <= 70.0) {
+                    bodyString.append("<div style=\"border-radius: 25px;\n" +
+                            "  border: 2px solid;\n" +
+                            " background: #A9A9A9; " +
+                            "width: 154px; height: 115px; background-image: url('" + STEAM_ITEM_IMAGE_URL + skins.get(i).getIconUrl() + "'); background-size: 154px 115px; display:inline-block; position: relative\" />");
+                    bodyString.append("<a style=\"padding-left: 10px\" href=\"/upgrade/" + item.getId() + "/" + skins.get(i).getHashName() + "\"><button>Upgrade to " + skins.get(i).getPrice() + "</button></a>");
+                    bodyString.append("<div style=\"position: absolute; top: 20px; right: 4px;\">" + String.format("%,.2f", chance) + "%</div>");
+                    bodyString.append("<div style=\"position: absolute; bottom: 4px; left: 4px; color: white;\">" + skins.get(i).getHashName() + "</div></div>");
+                }
+            }
         }
         return bodyString.toString();
     }

@@ -100,14 +100,14 @@ public class InventoryService {
         return inventoryRepository.findDropInventoryItemsByUser(user);
     }
 
-    public void giveVirtualSkin(User user, Skin skin) {
+    public InventoryItem giveVirtualSkin(User user, Skin skin) {
         InventoryItem item = inventoryRepository.findWebsiteInventoryItemByUserSkin(user, skin);
         if(item != null) {
             item.setCount(item.getCount() + 1);
-            inventoryRepository.save(item);
+            return inventoryRepository.save(item);
         }
         else {
-            inventoryRepository.save(new InventoryItem(user, skin, 1, "website"));
+            return inventoryRepository.save(new InventoryItem(user, skin, 1, "website"));
         }
     }
 

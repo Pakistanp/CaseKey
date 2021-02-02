@@ -32,17 +32,17 @@ public class UpgradeService {
         return inventoryService.getItemById(itemId);
     }
 
-    public boolean upgrade(User user, int inventoryItemId, String destinationSkinHashName, List<Skin> allSkins) {
-        boolean isUpgraded = false;
+    public int upgrade(User user, int inventoryItemId, String destinationSkinHashName, List<Skin> allSkins) {
+        int upgradedItemId = 0;
         InventoryItem item = getItemById(inventoryItemId);
         Skin newItem = skinService.getSkinByHashNameFromList(allSkins, destinationSkinHashName);
         double chanceToUpgrade = calculateChanceToUpdate(item, newItem);
         inventoryService.removeItem(item);
         if (draw(chanceToUpgrade)) {
-            inventoryService.giveVirtualSkin(user, newItem);
-            isUpgraded = true;
+            InventoryItem upgradedItem = inventoryService.giveVirtualSkin(user, newItem);
+            upgradedItemId = upgradedItem.getId();
         }
-        return isUpgraded;
+        return upgradedItemId;
     }
 
     private boolean draw(double chance) {
