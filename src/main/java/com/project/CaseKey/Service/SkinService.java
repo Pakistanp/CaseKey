@@ -131,4 +131,40 @@ public class SkinService {
         }
         return skin;
     }
+
+    private Double priceToDouble(String price) {
+        String noDolarSign = price.replace("$","");
+        return Double.parseDouble(noDolarSign.replace(",",""));
+    }
+
+    public List<Skin> sortByPrice(List<Skin> skins) {
+        skins.sort(new Comparator<Skin>() {
+            @Override
+            public int compare(Skin s1, Skin s2) {
+                if (s1.getPrice().equals(s2.getPrice())) {
+                    return 0;
+                }
+                else if (priceToDouble(s1.getPrice()) > priceToDouble(s2.getPrice())) {
+                    return 1;
+                }
+                else {
+                    return -1;
+                }
+            }
+        });
+        return skins;
+    }
+
+    public List<Skin> getSkinsFromList(List<Skin> skins, List<String> skinsHashCode) {
+        List<Skin> result = new ArrayList<>();
+        for (String skinHashCode : skinsHashCode) {
+            for (Skin skin : skins) {
+                if (skin.getHashName().equals(skinHashCode)) {
+                    result.add(skin);
+                    break;
+                }
+            }
+        }
+        return result;
+    }
 }

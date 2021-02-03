@@ -4,6 +4,7 @@ import com.project.CaseKey.JsonModel.UserInfo;
 import com.project.CaseKey.Model.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TemporaryView {
 
@@ -100,15 +101,19 @@ public class TemporaryView {
         return bodyString.toString();
     }
 
-    public String createViewForUpgradeItem(User user, InventoryItem item, List<Skin> skins) {
+    public String createViewForUpgradeItem(User user, InventoryItem item, List<Skin> skins, int startShowFrom) {
         StringBuilder bodyString = new StringBuilder();
         if( user != null ) {
             bodyString.append("<h3>Upgrader</h3><br>");
+            bodyString.append("<a href=\"/inventory/\">Inventory</a><br>");
             bodyString.append("<div style=\"width: 154px; height: 115px; background-image: url('" + STEAM_ITEM_IMAGE_URL + item.getInventorySkin().getIconUrl() + "'); background-size: 154px 115px; display:inline-block; position: relative\" /></div><hr><br>");
 
-            for (int i = 0; i < 300; i++) {
+            int counter = 0;
+            int lastShowned = 0;
+            for (int i = startShowFrom; i < skins.size(); i++) {
                 double chance = priceToDouble(item.getInventorySkin().getPrice()) * 100.00 / priceToDouble(skins.get(i).getPrice());
                 if (chance <= 70.0) {
+                    counter++;
                     bodyString.append("<div style=\"border-radius: 25px;\n" +
                             "  border: 2px solid;\n" +
                             " background: #A9A9A9; " +
@@ -117,15 +122,60 @@ public class TemporaryView {
                     bodyString.append("<div style=\"position: absolute; top: 20px; right: 4px;\">" + String.format("%,.2f", chance) + "%</div>");
                     bodyString.append("<div style=\"position: absolute; bottom: 4px; left: 4px; color: white;\">" + skins.get(i).getHashName() + "</div></div>");
                 }
+                if (counter == 50) {
+                    lastShowned = i;
+                    break;
+                }
             }
+
+            bodyString.append("<a href=\"/upgrade/" + item.getId() + "/page/" + (lastShowned - 1) + "\"><button><-</button></a>");
+            bodyString.append("<a href=\"/upgrade/" + item.getId() + "/page/" + (lastShowned + 1) + "\"><button>-></button></a>");
         }
         return bodyString.toString();
     }
 
-    public String createViewForCaseCreator() {
+    public String createViewForCaseCreator(List<Skin> skins) {
         StringBuilder bodyString = new StringBuilder();
-        bodyString.append("<form action=\"/createCase\" method=\"post\">");
-        bodyString.append("<input type=\"range\" min=\"1\" max=\"100\" value=\"1\" oninput=\"this.nextElementSibling.value = this.value\"><output></output>%</form>");
+        bodyString.append("<style>" +
+                " input:checked + label{" +
+                " border-radius: 25px;" +
+                " border: 3px solid red;" +
+                "}" +
+                "label { display: inline-block; width: 158px}" +
+                "</style>");
+        bodyString.append("<form action=\"/case/creator/chance\" method=\"get\">");
+        for (Skin skin : skins) {
+            bodyString.append("<input type=\"checkbox\" id=\""+ skin.getHashName() +"\" name=\"checkedSkins\" value =\""+ skin.getHashName() +"\" hidden>");
+            bodyString.append("<label for=\""+ skin.getHashName() +"\">");
+            bodyString.append("<div style=\"" +
+                    " border-radius: 25px;\n" +
+                    "  border: 2px solid;\n" +
+                    " background: #A9A9A9; " +
+                    "width: 154px; height: 115px; background-image: url('" + STEAM_ITEM_IMAGE_URL + skin.getIconUrl() + "'); background-size: 154px 115px; display:inline-block; position: relative\" />");
+            bodyString.append("<div style=\"position: absolute; top: 4px; right: 4px;\">" + skin.getPrice() + "</div>");
+            bodyString.append("<div style=\"position: absolute; bottom: 4px; left: 4px; color: white;\">" + skin.getHashName() + "</div></div></label>");
+        }
+        bodyString.append("<input type=\"submit\" value=\"Create\">");
+        bodyString.append("</form>");
+        return bodyString.toString();
+    }
+
+    public String createViewForCaseChanceCreator(List<Skin> skins) {
+        StringBuilder bodyString = new StringBuilder();
+        bodyString.append("<form action=\"/case/creator/create\" method=\"post\">");
+        bodyString.append("<label for=\"caseName\">Let's submit case name</label>");
+        bodyString.append("<input id=\"caseName\" type=\"text\" name=\"caseName\"><br>");
+        for (Skin skin : skins) {
+            bodyString.append("<div style=\"border-radius: 25px;\n" +
+                    "  border: 2px solid;\n" +
+                    " background: #A9A9A9; " +
+                    "width: 154px; height: 115px; background-image: url('" + STEAM_ITEM_IMAGE_URL + skin.getIconUrl() + "'); background-size: 154px 115px; display:block; position: relative\" />");
+            bodyString.append("<div style=\"position: absolute; top: 4px; right: 4px;\">" + skin.getPrice() + "</div>");
+            bodyString.append("<div style=\"position: absolute; bottom: 4px; left: 4px; color: white;\">" + skin.getHashName() + "</div></div>");
+            bodyString.append("<input type=\"range\" min=\"1\" max=\"100\" name=\"chances\" oninput=\"this.nextElementSibling.value = this.value\"><output></output>%");
+        }
+        bodyString.append("<input type=\"submit\" value=\"Create\">");
+        bodyString.append("</form>");
         return bodyString.toString();
     }
 }
