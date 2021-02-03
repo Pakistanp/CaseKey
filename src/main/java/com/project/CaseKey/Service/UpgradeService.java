@@ -25,7 +25,8 @@ public class UpgradeService {
     }
 
     public List<Skin> getAllSkins() {
-        return skinService.getAllSkins();
+        List<Skin> skins = skinService.getAllSkins();
+        return skinService.sortByPrice(skins);
     }
 
     public InventoryItem getItemById(int itemId) {
@@ -47,7 +48,6 @@ public class UpgradeService {
 
     private boolean draw(double chance) {
         Random random = new Random();
-        random.nextDouble();
         return (100.0 * random.nextDouble()) <= chance;
     }
 }

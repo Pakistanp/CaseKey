@@ -27,6 +27,19 @@ public class UpgradeController {
 
     TemporaryView temporaryView = new TemporaryView();
 
+    @GetMapping(value = "/upgrade/{itemId}/page/{page}")
+    public String upgradePage(HttpServletRequest request, HttpServletResponse response,
+                          @PathVariable int itemId, @PathVariable int page) {
+        User user = (User) request.getSession().getAttribute("user");
+        List<Skin> skins = (List<Skin>) request.getSession().getAttribute("allSkins");
+        if (skins == null) {
+            skins = upgradeService.getAllSkins();
+            request.getSession().setAttribute("allSkins", skins);
+        }
+        InventoryItem item = upgradeService.getItemById(itemId);
+        return temporaryView.createViewForUpgradeItem(user, item, skins, page);
+    }
+
     @GetMapping(value = "/upgrade/{itemId}")
     public String upgrade(HttpServletRequest request, HttpServletResponse response,
                           @PathVariable int itemId) {
@@ -34,10 +47,10 @@ public class UpgradeController {
         List<Skin> skins = (List<Skin>) request.getSession().getAttribute("allSkins");
         if (skins == null) {
             skins = upgradeService.getAllSkins();
+            request.getSession().setAttribute("allSkins", skins);
         }
-        request.getSession().setAttribute("allSkins", skins);
         InventoryItem item = upgradeService.getItemById(itemId);
-        return temporaryView.createViewForUpgradeItem(user, item, skins);
+        return temporaryView.createViewForUpgradeItem(user, item, skins, 1);
     }
 
     @GetMapping(value = "/upgrade/{itemId}/{descIdItem}")
