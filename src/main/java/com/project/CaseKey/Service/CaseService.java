@@ -148,6 +148,6 @@ public class CaseService {
         for (SkinInCase skin : skinsInCase) {
             price += priceToDouble(skin.getSkinCase().getPrice()) * skin.getDropChance() / 100.0;
         }
-        return price;
+        return Double.parseDouble(String.format("%,.2f", price));
     }
 }
