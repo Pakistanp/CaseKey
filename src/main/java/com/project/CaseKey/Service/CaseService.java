@@ -111,8 +111,8 @@ public class CaseService {
     }
 
     private Double priceToDouble(String price) {
-        String noDolarSign = price.replace("$","");
-        return Double.parseDouble(noDolarSign.replace(",",""));
+        String withoutDolarSign = price.replace("$","");
+        return Double.parseDouble(withoutDolarSign.replace(",",""));
     }
 
     public boolean verifySkinsChances(List<String> chances) {

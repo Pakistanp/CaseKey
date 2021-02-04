@@ -133,8 +133,8 @@ public class SkinService {
     }
 
     private Double priceToDouble(String price) {
-        String noDolarSign = price.replace("$","");
-        return Double.parseDouble(noDolarSign.replace(",",""));
+        String withoutDolarSign = price.replace("$","");
+        return Double.parseDouble(withoutDolarSign.replace(",",""));
     }
 
     public List<Skin> sortByPrice(List<Skin> skins) {
