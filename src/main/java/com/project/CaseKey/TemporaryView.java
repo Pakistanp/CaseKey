@@ -11,8 +11,8 @@ public class TemporaryView {
     private final String STEAM_ITEM_IMAGE_URL = "https://steamcommunity-a.akamaihd.net/economy/image/";
 
     private Double priceToDouble(String price) {
-        String noDolarSign = price.replace("$","");
-        return Double.parseDouble(noDolarSign.replace(",",""));
+        String withoutDolarSign = price.replace("$","");
+        return Double.parseDouble(withoutDolarSign.replace(",",""));
     }
 
     public String createViewForHomePage(User user) {
@@ -176,6 +176,40 @@ public class TemporaryView {
         }
         bodyString.append("<input type=\"submit\" value=\"Create\">");
         bodyString.append("</form>");
+        return bodyString.toString();
+    }
+
+    public String createViewForContract(List<InventoryItem> items) {
+        StringBuilder bodyString = new StringBuilder();
+        bodyString.append("<script type=\"text/javascript\">");
+        bodyString.append("$(\"input:checkbox\").click(function() {" +
+                "var bol = $(\"input:checkbox:checked\").length >= 2;" +
+                "$(\"input:checkbox\").not(\":checked\").attr(\"disabled\",bol);" +
+                "});");
+        bodyString.append("</script>");
+        bodyString.append("<style>" +
+                " input:checked + label{" +
+                " border-radius: 25px;" +
+                " border: 3px solid red;" +
+                "}" +
+                "label { display: inline-block; width: 158px}" +
+                "</style>");
+
+        bodyString.append("<form action=\"/contract/sign\" method=\"post\">");
+        for (InventoryItem item : items) {
+            bodyString.append("<input type=\"checkbox\" id=\""+ item.getId() +"\" name=\"checkedSkins\" value =\""+ item.getId() +"\" hidden>");
+            bodyString.append("<label for=\""+ item.getId() +"\">");
+            bodyString.append("<div style=\"" +
+                    " border-radius: 25px;\n" +
+                    "  border: 2px solid;\n" +
+                    " background: #A9A9A9; " +
+                    "width: 154px; height: 115px; background-image: url('" + STEAM_ITEM_IMAGE_URL + item.getInventorySkin().getIconUrl() + "'); background-size: 154px 115px; display:inline-block; position: relative\" />");
+            bodyString.append("<div style=\"position: absolute; top: 4px; right: 4px;\">" + item.getInventorySkin().getPrice() + "</div>");
+            bodyString.append("<div style=\"position: absolute; bottom: 4px; left: 4px; color: white;\">" + item.getInventorySkin().getHashName() + "</div></div></label>");
+        }
+        bodyString.append("<input type=\"submit\" value=\"SIGN\">");
+        bodyString.append("</form>");
+
         return bodyString.toString();
     }
 }
