@@ -16,11 +16,16 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven {
+		url 'https://oss.sonatype.org/content/repositories/snapshots/'
+	}
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'in.dragonbra:javasteam:1.0.0-SNAPSHOT'
+	implementation 'org.bouncycastle:bcprov-jdk15on:1.60'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
